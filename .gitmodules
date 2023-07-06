@@ -1,0 +1,3 @@
+[submodule "MySim-Tool"]
+	path = MySim-Tool
+	url = git@github.com:PedroAntunes178/MySim-Tool.git
