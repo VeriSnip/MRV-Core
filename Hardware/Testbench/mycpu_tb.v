@@ -5,8 +5,8 @@ module mycpu_tb;
     localparam integer ClkP = 10;
 
     wire clk;
-    wire reset;
-    wire test_o;
+    reg reset;
+    wire test;
 
     assign #(ClkP/2) clk = ~clk;
 
@@ -14,7 +14,8 @@ module mycpu_tb;
         $display("Testbench Start");
         reset = 0;
         #100 reset = 1;
-        #100 $display("Test Output: %x", test_o);
+        #100 reset = 0;
+        #100 $display("Test Output: %x", test);
         $display("Testbench End");
         $finish();
     end
