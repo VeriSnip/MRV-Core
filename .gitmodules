@@ -1,3 +1,6 @@
-[submodule "MySim-Tool"]
-	path = MySim-Tool
-	url = git@github.com:PedroAntunes178/MySim-Tool.git
+[submodule "Utils-Tool"]
+	path = Utils-Tool
+	url = git@github.com:LogicoreDesign/Utils-Tool.git
+[submodule "VT-Tool"]
+	path = VT-Tool
+	url = git@github.com:LogicoreDesign/VT-Tool.git
