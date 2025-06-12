@@ -10,6 +10,6 @@ module RV_fpga #(
   `include "generated_wires_RV_fpga.vs"
 
   `include "instantiate_core.vs"
-  `include "instantiate_myuart_test.vs"
+  `include "instantiate_myuart.vs"
 
 endmodule
