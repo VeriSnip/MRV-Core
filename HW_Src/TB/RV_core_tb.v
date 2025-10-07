@@ -1,26 +1,26 @@
 `timescale 1ns/1ps
 
-module mycpu_tb;
+module RV_core_tb;
 
-    localparam integer ClkP = 10;
+    localparam integer ClkPeriod = 10;
 
     wire clk;
     reg reset;
     wire test;
 
-    assign #(ClkP/2) clk = ~clk;
+    assign #(ClkPeriod/2) clk = ~clk;
 
     initial begin
         $display("Testbench Start");
         reset = 0;
-        #100 reset = 1;
-        #100 reset = 0;
-        #100 $display("Test Output: %x", test);
+        #10 reset = 1;
+        #10 reset = 0;
+        #10 $display("Test Output: %x", test);
         $display("Testbench End");
         $finish();
     end
 
-    mycpu #(
+    RV_core #(
         .DATA_W(1)
     ) cpu0 (
         .clk_i(clk),

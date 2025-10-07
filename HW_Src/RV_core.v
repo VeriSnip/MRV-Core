@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module core #(
+module RV_core #(
     parameter integer DATA_W = 32,
     parameter integer ADDR_W = 32
 ) (
