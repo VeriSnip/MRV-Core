@@ -20,12 +20,19 @@ module RV_core_tb;
         $finish();
     end
 
+    `include "mem_test_program.vs" // ROM, test.bin
+
     RV_core #(
         .DATA_W(1)
     ) cpu0 (
         .clk_i(clk),
         .arst_i(reset),
-        .test_o(test)
+        .i_addr_o(),
+        .i_data_i(rom_data),
+        .d_addr_o(),
+        .d_data_i(32'd0),
+        .d_data_o(),
+        .d_we_o()
     );
 
 endmodule
