@@ -77,8 +77,8 @@ module RV_core #(
   ALU alu0 (
       .clk_i(clk_i),
       .arst_i(arst_i),
-      .a_i(SrcA),
-      .b_i(SrcB),
+      .SrcA_i(SrcA),
+      .SrcB_i(SrcB),
       .control_i(alu_control),
       .result_o(alu_result),
       .zero_o(alu_zero)
