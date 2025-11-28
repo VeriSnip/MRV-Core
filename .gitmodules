@@ -4,6 +4,3 @@
 [submodule "Open-Library"]
 	path = submodules/Open-Library
 	url = git@github.com:LogicoreDesign/Open-Library.git
-[submodule "submodules/UART-Core"]
-	path = submodules/UART-Core
-	url = git@github.com:LogicoreDesign/UART-Core.git
