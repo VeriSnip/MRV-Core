@@ -47,15 +47,7 @@ module RV_core #(
 
 
   // LOGIC
-  assign PCNext = PCSrc ? PCTarget[31:2] : (PC + 1);
-
-  assign i_addr_o = {PC, 2'b00};  // Word aligned
-  assign Instr = i_data_i;
-  assign d_addr_o = ALUResult;
-  assign d_data_o = WriteData;
-  assign d_we_o = MemWrite;
-
-  assign SrcB = ALUSrc ? ImmExt : WriteData;
+  
 
   always @(*) begin
     // Immediate generation based on instruction type
@@ -73,43 +65,95 @@ module RV_core #(
   PC, 30, 0, , , PCNext
   */
 
+  `include "FSM_mainControlUnit.vs"  /*
+  Fetch:
+    --> Decode
+    AdrSrc = 1'b0
+    IRWrite = 1'b1
+    ALUSrcA = 2'b00
+    ALUSrcB = 2'b10
+    ALUOp = 2'b00
+    ResultSrc = 2'b10
+    PCUpdate = 1'b1
+  Decode:
+    (op == 3) | (op == 35) --> MemAdr
+    op == 51 --> ExecuteR
+    op == 19 --> ExecuteI
+    op == 111 --> JAL
+    op == 99 --> BEQ
+    ALUSrcA = 2'b01
+    ALUSrcB = 2'b01
+    ALUOp = 2'b00
+  MemAdr:
+    op == 3 --> MemRead
+    op == 35 --> MemWrite
+    ALUSrcA = 2'b10
+    ALUSrcB = 2'b01
+    ALUOp = 2'b00
+  MemRead:
+    --> MemWB
+    ResultSrc = 2'b10
+    AdrSrc = 1b'1
+  MemWB:
+    --> Fetch
+    ResultSrc = 2'b01
+    RegWrite = 1b'1
+  MemWrite:
+    --> Fetch
+    ResultSrc = 2'b00
+    AdrSrc = 1b'1
+    RegWrite = 1b'1
+  ExecuteR:
+    --> ALUWB
+    ALUSrcA = 2'b10
+    ALUSrcB = 2'b00
+    ALUOp = 2'b10
+  ALUWB:
+    --> Fetch
+    ResultSrc = 2'b00
+    RegWrite = 1b'1
+  ExecuteI:
+    --> ALUWB
+    ALUSrcA = 2'b10
+    ALUSrcB = 2'b01
+    ALUOp = 2'b10
+  JAL:
+    --> ALUWB
+    ALUSrcA = 2'b01
+    ALUSrcB = 2'b10
+    ALUOp = 2'b00
+    ResultSrc = 2'b00
+    PCUpdate = 1'b1
+  BEQ:
+    --> Fetch
+    ALUSrcA = 2'b10
+    ALUSrcB = 2'b00
+    ALUOp = 2'b01
+    ResultSrc = 2'b00
+    Branch = 1'b1
+  */
+
   // Core Arithmetic Logic Unit
   ALU alu0 (
       .clk_i(clk_i),
       .arst_i(arst_i),
-      .SrcA_i(SrcA),
-      .SrcB_i(SrcB),
-      .control_i(alu_control),
-      .result_o(alu_result),
-      .zero_o(alu_zero)
+      .SrcA_i(ALUSrcA),
+      .SrcB_i(ALUSrcB),
+      .control_i(ALUControl),
+      .result_o(ALUResult),
+      .zero_o(Zero)
   );
 
   RegisterFile RF (
       .clk_i(clk_i),
       .arst_i(arst_i),
       .read_addr_1_i(Instr[19:15]),
-      .read_data_1_o(SrcA),
+      .read_data_1_o(RD1),
       .read_addr_2_i(Instr[24:20]),
-      .read_data_2_o(WriteData),
+      .read_data_2_o(RD2),
       .write_addr_i(Instr[11:7]),
       .write_data_i(Result),
       .write_enable_i(RegWrite)
-  );
-
-  // Core Control Unit
-  ControlUnit control_unit0 (
-      .op_i(Instr[6:0]),
-      .func3_i(Instr[11:7]),
-      .func7_i(Instr[31:25]),
-      .zero_i(Zero),
-
-      .PCSrc_o(PCSrc),
-      .ResultSrc_o(ResultSrc),
-      .MemWrite_o(MemWrite),
-      .ALUSrc_o(ALUSrc),
-      .RegWrite_o(RegWrite),
-      .ImmSrc_o(ImmSrc),
-      .ALUControl_o(ALUControl)
   );
 
 endmodule
